@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TheZero — TheZero Network Store</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Sarabun:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --r0:#0a0a0a;--r1:#111114;--r2:#18181e;--r3:#222228;--r4:#2e2e36;
+  --red:#d42b2b;--red2:#b81f1f;--red3:#8a1515;--redlit:#e84040;
+  --white:#f0f0f0;--white2:#c8c8c8;--white3:#909090;
+  --border:#2e2e36;--borderl:#3a1a1a;
+}
+body{background:var(--r0);color:var(--white);font-family:'Sarabun',sans-serif;min-height:100vh}
+a{color:inherit;text-decoration:none}
+
+.hero{background:var(--r1);border-bottom:1px solid var(--borderl);padding:18px 32px 14px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.hero-left{display:flex;align-items:center;gap:12px}
+.logo-box{width:44px;height:44px;background:var(--red);border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:'Cinzel',serif;font-size:18px;font-weight:700;color:#fff}
+.hero-title{font-family:'Cinzel',serif;font-size:22px;color:var(--white);letter-spacing:1px}
+.hero-sub{font-size:12px;color:var(--white3);margin-top:2px}
+.hero-bal{background:var(--r2);border:1px solid var(--red3);border-radius:10px;padding:8px 18px;text-align:right}
+.hero-bal .blabel{font-size:11px;color:var(--white3)}
+.hero-bal .bamt{font-size:20px;font-weight:600;color:var(--redlit);font-family:'Cinzel',serif}
+
+.tabs{display:flex;border-bottom:1px solid var(--border);padding:0 32px;background:var(--r1);overflow-x:auto}
+.tab{padding:12px 20px;font-size:13px;font-weight:600;color:var(--white3);cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;white-space:nowrap}
+.tab:hover{color:var(--white2)}
+.tab.active{color:var(--redlit);border-bottom-color:var(--red)}
+
+.container{max-width:1100px;margin:0 auto;padding:24px 32px}
+.page{display:none}
+.page.active{display:block}
+.sec-title{font-size:11px;color:var(--white3);letter-spacing:2px;text-transform:uppercase;margin-bottom:16px}
+
+/* Shop */
+.ranks-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(165px,1fr));gap:12px}
+.rc{background:var(--r2);border-radius:12px;padding:16px;border:1px solid var(--border);cursor:pointer;transition:all .2s;position:relative;overflow:hidden}
+.rc:hover{border-color:#4a1a1a;transform:translateY(-3px)}
+.rc.owned{border-color:#3a1a1a;background:#160e0e}
+.rc .stripe{position:absolute;top:0;left:0;right:0;height:2px}
+.rbadge{display:inline-block;font-family:'Cinzel',serif;font-size:11px;font-weight:600;padding:3px 8px;border-radius:5px;margin-bottom:8px}
+.rc .rname{font-size:15px;font-weight:600;font-family:'Cinzel',serif;margin-bottom:4px}
+.rc .rdesc{font-size:11px;color:var(--white3);line-height:1.5;margin-bottom:10px}
+.rperks{list-style:none;margin-bottom:12px}
+.rperks li{font-size:11px;color:var(--white2);padding:2px 0 2px 12px;position:relative}
+.rperks li::before{content:'▸';position:absolute;left:0;font-size:9px;top:3px;color:var(--red)}
+.rprice{font-family:'Cinzel',serif;font-size:16px;font-weight:700;color:var(--redlit)}
+.rprice span{font-size:11px;color:var(--white3);font-family:'Sarabun',sans-serif;font-weight:400}
+.bbtn{width:100%;padding:8px;border-radius:8px;border:none;font-size:12px;font-weight:600;cursor:pointer;font-family:'Sarabun',sans-serif;transition:all .15s;margin-top:8px}
+.bbtn:hover{filter:brightness(1.15)}
+.bbtn:active{transform:scale(.97)}
+.bbtn.no{background:#1a1a1a;color:#505050;border:1px solid #2a2a2a;cursor:not-allowed}
+.bbtn.got{background:#1a0e0e;color:var(--red);border:1px solid #3a1a1a;cursor:default}
+
+/* Topup */
+.topup-methods{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:12px;margin-bottom:24px}
+.method-card{background:var(--r2);border:1px solid var(--border);border-radius:12px;padding:18px;cursor:pointer;transition:all .2s;border-top-width:3px}
+.method-card:hover{transform:translateY(-2px);border-color:#4a1a1a}
+.method-card.active-method{border-color:var(--red)!important;background:#1a0e0e}
+.method-logo{font-size:28px;margin-bottom:10px}
+.method-name{font-size:14px;font-weight:600;color:var(--white);margin-bottom:3px}
+.method-desc{font-size:11px;color:var(--white3)}
+
+.topup-form{background:var(--r2);border:1px solid var(--borderl);border-radius:14px;padding:24px;max-width:520px}
+.form-label{display:block;font-size:12px;color:var(--white3);margin-bottom:6px;letter-spacing:.5px}
+.form-input{width:100%;background:var(--r3);border:1px solid var(--border);border-radius:8px;padding:10px 14px;color:var(--white);font-size:14px;font-family:'Sarabun',sans-serif;outline:none;margin-bottom:14px;transition:border .15s}
+.form-input:focus{border-color:var(--red3)}
+.pkg-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
+.pkg{background:var(--r3);border:1px solid var(--border);border-radius:8px;padding:10px 6px;text-align:center;cursor:pointer;transition:all .15s}
+.pkg:hover{border-color:#4a1a1a}
+.pkg.sel{border-color:var(--red);background:#1a0e0e}
+.pkg .pamount{font-family:'Cinzel',serif;font-size:15px;font-weight:700;color:var(--redlit)}
+.pkg .plabel{font-size:10px;color:var(--white3);margin-top:2px}
+.pkg .pbonus{font-size:10px;color:#4ade80;margin-top:2px}
+.submit-btn{width:100%;padding:12px;border-radius:8px;border:none;background:var(--red2);color:#fff;font-size:14px;font-weight:600;cursor:pointer;font-family:'Sarabun',sans-serif;transition:all .15s;letter-spacing:.3px}
+.submit-btn:hover{background:var(--red)}
+.submit-btn:active{transform:scale(.98)}
+
+.qr-box{background:var(--r3);border:1px solid var(--borderl);border-radius:14px;padding:24px;text-align:center;min-width:240px}
+.qr-img{width:170px;height:170px;background:white;border-radius:10px;margin:0 auto 14px;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.qr-img svg{width:150px;height:150px}
+.bank-badge{background:var(--r2);border:1px solid var(--border);border-radius:6px;padding:4px 12px;font-size:12px;font-weight:600;color:var(--white2);display:inline-block;margin-bottom:10px}
+.qr-amt{font-family:'Cinzel',serif;font-size:26px;font-weight:700;color:var(--redlit);margin-bottom:4px}
+.qr-sub{font-size:12px;color:var(--white3)}
+.copy-btn{background:var(--r2);border:1px solid var(--border);border-radius:6px;padding:7px 16px;font-size:12px;font-weight:600;color:var(--white2);cursor:pointer;font-family:'Sarabun',sans-serif;margin-top:12px;transition:all .15s;display:inline-flex;align-items:center;gap:6px}
+.copy-btn:hover{border-color:var(--red3);color:var(--redlit)}
+.slip-note{font-size:11px;color:var(--white3);margin-top:12px;line-height:1.7;background:var(--r2);border-left:3px solid var(--red3);border-radius:0 8px 8px 0;padding:10px 14px}
+
+/* My rank */
+.my-box{background:var(--r2);border-radius:14px;border:1px solid var(--borderl);padding:20px;margin-bottom:20px;display:flex;align-items:center;gap:16px}
+.my-icon{width:56px;height:56px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-family:'Cinzel',serif;font-size:20px;font-weight:700}
+.my-info .label12{font-size:12px;color:var(--white3)}
+.my-info .rdname{font-family:'Cinzel',serif;font-size:22px;font-weight:700}
+.my-info .sub12{font-size:12px;color:var(--white3);margin-top:2px}
+.hist-list{display:flex;flex-direction:column;gap:8px}
+.hist-item{background:var(--r2);border:1px solid var(--border);border-radius:10px;padding:12px 16px;display:flex;align-items:center;gap:12px}
+.hist-icon{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px}
+.hist-info{flex:1}
+.hist-name{font-size:13px;font-weight:600;color:var(--white)}
+.hist-date{font-size:11px;color:var(--white3)}
+.hist-amt{font-family:'Cinzel',serif;font-size:14px;font-weight:600}
+
+/* Admin */
+.admin-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-bottom:24px}
+.stat-card{background:var(--r2);border:1px solid var(--border);border-radius:12px;padding:16px}
+.stat-card .slabel{font-size:11px;color:var(--white3);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px}
+.stat-card .sval{font-family:'Cinzel',serif;font-size:24px;font-weight:700;color:var(--redlit)}
+.stat-card .ssub{font-size:11px;color:var(--white3);margin-top:2px}
+.pending-list{display:flex;flex-direction:column;gap:8px}
+.pending-item{background:var(--r2);border:1px solid var(--border);border-radius:10px;padding:14px 16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.pending-info{flex:1;min-width:120px}
+.pending-name{font-size:14px;font-weight:600;color:var(--white)}
+.pending-detail{font-size:11px;color:var(--white3);margin-top:2px}
+.pending-amt{font-family:'Cinzel',serif;font-size:14px;font-weight:600;color:var(--redlit);margin-right:10px}
+.pending-badge{padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600}
+.badge-wait{background:#1a1400;color:#f0c040;border:1px solid #4a3a00}
+.badge-ok{background:#0a1a0a;color:#4ade80;border:1px solid #1a4a1a}
+.badge-fail{background:#1a0e0e;color:var(--redlit);border:1px solid var(--red3)}
+.action-row{display:flex;gap:6px}
+.a-btn{border-radius:6px;border:none;padding:6px 12px;font-size:11px;font-weight:600;cursor:pointer;font-family:'Sarabun',sans-serif;transition:all .15s}
+.a-btn.approve{background:#1a3a1a;color:#4ade80;border:1px solid #2a5a2a}
+.a-btn.approve:hover{background:#1f4a1f}
+.a-btn.reject{background:#1a0e0e;color:var(--redlit);border:1px solid var(--red3)}
+.a-btn.reject:hover{background:#260f0f}
+.slip-thumb{width:40px;height:40px;background:var(--r3);border-radius:6px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:18px;cursor:pointer}
+
+/* Modal */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:200;align-items:center;justify-content:center}
+.modal-bg.open{display:flex}
+.modal{background:var(--r2);border:1px solid var(--borderl);border-radius:16px;padding:28px;max-width:420px;width:90%;position:relative}
+.modal-title{font-family:'Cinzel',serif;font-size:18px;font-weight:700;color:var(--white);margin-bottom:16px}
+.modal-close{position:absolute;top:14px;right:16px;background:none;border:none;color:var(--white3);font-size:22px;cursor:pointer;line-height:1}
+.modal-close:hover{color:var(--white)}
+.confirm-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px}
+.confirm-label{font-size:12px;color:var(--white3)}
+.confirm-val{font-size:13px;font-weight:600;color:var(--white);text-align:right}
+.divider{border:none;border-top:1px solid var(--border);margin:14px 0}
+.big-price{font-family:'Cinzel',serif;font-size:26px;font-weight:700;color:var(--redlit);text-align:center;margin:12px 0}
+
+/* toast */
+.toast{position:fixed;bottom:24px;right:24px;background:var(--r3);border:1px solid var(--red3);color:var(--redlit);padding:10px 20px;border-radius:10px;font-size:14px;font-weight:600;transform:translateY(80px);opacity:0;transition:all .3s;z-index:300;font-family:'Sarabun',sans-serif;pointer-events:none}
+.toast.show{transform:translateY(0);opacity:1}
+
+@media(max-width:600px){
+  .hero{padding:14px 16px}
+  .container{padding:16px}
+  .tabs{padding:0 16px}
+  .ranks-grid{grid-template-columns:repeat(auto-fill,minmax(140px,1fr))}
+}
+
+.main-banner{
+text-align:center;
+padding:70px 20px;
+background:linear-gradient(180deg,#111114,#0a0a0a);
+border-bottom:1px solid #2a2a2a;
+}
+.main-banner h1{
+font-size:52px;
+letter-spacing:4px;
+font-family:'Cinzel',serif;
+}
+.main-banner p{
+color:#888;
+margin-top:10px;
+}
+.footer{
+margin-top:60px;
+padding:25px;
+text-align:center;
+color:#777;
+border-top:1px solid #222;
+}
+.rc{
+border-radius:18px !important;
+}
+
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-left">
+    <div class="logo-box">R</div>
+    <div>
+      <div class="hero-title">TheZero</div>
+      <div class="hero-sub">TheZero Network Store</div>
+    </div>
+  </div>
+  <div class="hero-bal">
+    <div class="blabel">ยอดเงินของคุณ</div>
+    <div class="bamt" id="userBalance">2,500 ฿</div>
+  </div>
+</div>
+
+
+<div class="main-banner">
+  <h1>THEZERO NETWORK</h1>
+  <p>Premium Minecraft Experience</p>
+</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="sw('shop')">🏪 ร้านค้า</div>
+  <div class="tab" onclick="sw('topup')">💳 เติมเงิน</div>
+  <div class="tab" onclick="sw('myrank')">👑 ยศของฉัน</div>
+  <div class="tab" onclick="sw('admin')">🔐 Admin</div>
+</div>
+
+<div class="container">
+
+<!-- SHOP -->
+<div id="shopPage" class="page active">
+  <div class="sec-title">เลือกซื้อยศ</div>
+  <div class="ranks-grid" id="ranksGrid"></div>
+</div>
+
+<!-- TOPUP -->
+<div id="topupPage" class="page">
+  <div class="sec-title">เลือกช่องทางเติมเงิน</div>
+  <div class="topup-methods" id="methodGrid"></div>
+  <div id="topupFormArea"></div>
+</div>
+
+<!-- MY RANK -->
+<div id="myrankPage" class="page">
+  <div id="myRankBox"></div>
+  <div class="sec-title">ประวัติธุรกรรม</div>
+  <div class="hist-list" id="historyList"></div>
+</div>
+
+<!-- ADMIN -->
+<div id="adminPage" class="page">
+  <div id="adminStats" class="admin-grid"></div>
+  <div class="sec-title">รายการรอตรวจสลิป</div>
+  <div class="pending-list" id="pendingList"></div>
+</div>
+
+</div>
+
+<!-- BUY MODAL -->
+<div class="modal-bg" id="buyModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('buyModal')">✕</button>
+    <div class="modal-title">ยืนยันการซื้อยศ</div>
+    <div class="confirm-row">
+      <div class="confirm-label">ยศที่เลือก</div><div class="confirm-val" id="mRankName">—</div>
+      <div class="confirm-label">ยอดเงินปัจจุบัน</div><div class="confirm-val" id="mBalance">—</div>
+      <div class="confirm-label">ราคา</div><div class="confirm-val" id="mPrice">—</div>
+    </div>
+    <hr class="divider">
+    <div class="big-price" id="mBigPrice">— ฿</div>
+    <div style="font-size:12px;color:var(--white3);text-align:center;margin-bottom:16px">เงินจะถูกหักจากยอดคงเหลือของคุณ</div>
+    <button class="submit-btn" id="mConfirmBtn">✔ ยืนยันซื้อเลย</button>
+  </div>
+</div>
+
+<!-- SLIP MODAL -->
+<div class="modal-bg" id="slipModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('slipModal')">✕</button>
+    <div class="modal-title">ดูสลิปการโอน</div>
+    <div style="background:var(--r3);border-radius:10px;padding:20px;text-align:center;margin-bottom:16px">
+      <div style="font-size:48px;margin-bottom:10px">🧾</div>
+      <div style="font-size:13px;color:var(--white3)">ตัวอย่างสลิปจาก</div>
+      <div id="slipFrom" style="font-size:16px;font-weight:600;color:var(--white);margin-top:4px">—</div>
+      <div id="slipAmt" style="font-family:'Cinzel',serif;font-size:24px;font-weight:700;color:var(--redlit);margin-top:8px">— ฿</div>
+      <div id="slipTime" style="font-size:11px;color:var(--white3);margin-top:4px">—</div>
+    </div>
+    <div class="action-row" style="gap:10px">
+      <button class="a-btn approve" style="flex:1;padding:10px" id="slipApproveBtn">✔ อนุมัติ</button>
+      <button class="a-btn reject" style="flex:1;padding:10px" id="slipRejectBtn">✕ ปฏิเสธ</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const RANKS=[
+  {id:'iron',name:'Iron',badge:'⚙ Iron',color:'#b0b0b0',bg:'#1e1e22',price:200,desc:'ยศเริ่มต้น สำหรับผู้เล่นใหม่',perks:['เข้า VIP Zone ได้','สีชื่อสีเทา','โฮมได้ 2 จุด']},
+  {id:'gold',name:'Gold',badge:'★ Gold',color:'#f0c040',bg:'#1e1a0a',price:500,desc:'ยศระดับกลาง สิทธิพิเศษเพิ่มขึ้น',perks:['สีชื่อสีทอง','โฮมได้ 5 จุด','Kit Gold ทุก 24 ชม.']},
+  {id:'diamond',name:'Diamond',badge:'◆ Diamond',color:'#60c8f0',bg:'#0a1620',price:1200,desc:'ยศยอดนิยม นักเล่นตัวจริง',perks:['สีชื่อสีฟ้า','โฮมได้ 10 จุด','บินใน Survival ได้']},
+  {id:'emerald',name:'Emerald',badge:'◉ Emerald',color:'#50d080',bg:'#0a1a10',price:2000,desc:'ยศระดับสูง มืออาชีพ',perks:['สีชื่อสีเขียว','โฮมได้ 20 จุด','ปลดล็อค Plots พิเศษ']},
+  {id:'legend',name:'Legend',badge:'✦ Legend',color:'#f07030',bg:'#1a0c00',price:3500,desc:'ยศตำนาน หายากและทรงเกียรติ',perks:['สีชื่อสีส้ม','โฮมได้ 50 จุด','Tag พิเศษในแชท']},
+  {id:'vip',name:'VIP+',badge:'♛ VIP+',color:'#c070f0',bg:'#140a1e',price:5000,desc:'ยศสูงสุด ครบทุกสิทธิ์',perks:['สีชื่อม่วง','โฮมไม่จำกัด','Kit God ทุก 1 ชม.','Prefix พิเศษ']},
+];
+const METHODS=[
+  {id:'true',name:'TrueMoney Wallet',desc:'อังเปา / โอนตรง',logo:'💚',topColor:'#16a34a'},
+  {id:'qr_kbank',name:'QR พร้อมเพย์ — กสิกร',desc:'สแกนจ่ายผ่าน KBANK',logo:'🟢',topColor:'#166030'},
+  {id:'qr_scb',name:'QR พร้อมเพย์ — SCB',desc:'สแกนจ่ายผ่าน SCB',logo:'💜',topColor:'#5b21b6'},
+  {id:'qr_ktb',name:'QR พร้อมเพย์ — กรุงไทย',desc:'สแกนจ่ายผ่าน KTB',logo:'🔵',topColor:'#1d4ed8'},
+];
+const PACKAGES=[
+  {amount:100,label:'100 ฿',bonus:''},
+  {amount:300,label:'300 ฿',bonus:'+20 ฿ ฟรี'},
+  {amount:500,label:'500 ฿',bonus:'+50 ฿ ฟรี'},
+  {amount:1000,label:'1,000 ฿',bonus:'+120 ฿ ฟรี'},
+  {amount:2000,label:'2,000 ฿',bonus:'+300 ฿ ฟรี'},
+  {amount:5000,label:'5,000 ฿',bonus:'+800 ฿ ฟรี'},
+];
+const BANK_INFO={
+  qr_kbank:{name:'กสิกรไทย',num:'081-234-5678',col:'#1a7a3a'},
+  qr_scb:{name:'ไทยพาณิชย์',num:'081-234-5678',col:'#7c3aed'},
+  qr_ktb:{name:'กรุงไทย',num:'081-234-5678',col:'#2563eb'}
+};
+
+let balance=2500,owned=['iron'];
+let history=[
+  {type:'topup',label:'เติมเงิน TrueMoney',amount:2500,date:'2 มิ.ย. 2026'},
+  {type:'buy',label:'ซื้อยศ Iron',amount:-200,date:'1 มิ.ย. 2026'},
+];
+let pendingTx=[
+  {id:'TX001',user:'Steve_TH',method:'TrueMoney',amount:500,date:'04/06/2026 10:32',status:'wait'},
+  {id:'TX002',user:'Notch99',method:'QR กสิกร',amount:1000,date:'04/06/2026 11:05',status:'wait'},
+  {id:'TX003',user:'Alex_MC',method:'QR SCB',amount:300,date:'04/06/2026 11:48',status:'ok'},
+];
+let selMethod=null,selPkg=null,pendingBuyId=null,viewTxId=null;
+
+function fmt(n){return parseInt(n).toLocaleString('th-TH')}
+function updBal(){document.getElementById('userBalance').textContent=fmt(balance)+' ฿'}
+
+/* SHOP */
+function renderShop(){
+  document.getElementById('ranksGrid').innerHTML=RANKS.map(r=>{
+    const isO=owned.includes(r.id),canB=balance>=r.price;
+    let btn=isO?`<button class="bbtn got" disabled>✔ มีแล้ว</button>`
+      :canB?`<button class="bbtn" style="background:${r.bg};color:${r.color};border:1px solid ${r.color}40" onclick="openBuyModal('${r.id}')">ซื้อเลย ➜</button>`
+      :`<button class="bbtn no" disabled>เงินไม่พอ</button>`;
+    return `<div class="rc${isO?' owned':''}">
+      <div class="stripe" style="background:${r.color}"></div>
+      <div class="rbadge" style="background:${r.bg};color:${r.color};border:1px solid ${r.color}40">${r.badge}</div>
+      <div class="rname" style="color:${r.color}">${r.name}</div>
+      <div class="rdesc">${r.desc}</div>
+      <ul class="rperks">${r.perks.map(p=>`<li>${p}</li>`).join('')}</ul>
+      <div class="rprice">${fmt(r.price)} <span>฿</span></div>${btn}</div>`;
+  }).join('');
+}
+
+function openBuyModal(id){
+  const r=RANKS.find(x=>x.id===id);
+  if(!r)return;
+  pendingBuyId=id;
+  document.getElementById('mRankName').textContent=r.badge+' '+r.name;
+  document.getElementById('mBalance').textContent=fmt(balance)+' ฿';
+  document.getElementById('mPrice').textContent=fmt(r.price)+' ฿';
+  document.getElementById('mBigPrice').textContent=fmt(r.price)+' ฿';
+  document.getElementById('mConfirmBtn').onclick=()=>confirmBuy();
+  document.getElementById('buyModal').classList.add('open');
+}
+
+function confirmBuy(){
+  const r=RANKS.find(x=>x.id===pendingBuyId);
+  if(!r||owned.includes(r.id)||balance<r.price)return;
+  balance-=r.price;owned.push(r.id);
+  history.unshift({type:'buy',label:'ซื้อยศ '+r.name,amount:-r.price,date:new Date().toLocaleDateString('th-TH')});
+  updBal();renderShop();
+  closeModal('buyModal');
+  showToast('✔ ซื้อยศ '+r.name+' สำเร็จ!');
+}
+
+/* TOPUP */
+function renderMethods(){
+  document.getElementById('methodGrid').innerHTML=METHODS.map(m=>`
+    <div class="method-card${selMethod===m.id?' active-method':''}" style="border-top-color:${m.topColor}" onclick="selectMethod('${m.id}')">
+      <div class="method-logo">${m.logo}</div>
+      <div class="method-name">${m.name}</div>
+      <div class="method-desc">${m.desc}</div>
+    </div>`).join('');
+}
+function selectMethod(id){selMethod=id;selPkg=null;renderMethods();renderTopupForm();}
+function selectPkg(i){
+  selPkg=i;
+  document.querySelectorAll('.pkg').forEach((el,j)=>el.classList.toggle('sel',i===j));
+  const ca=document.getElementById('customAmt');if(ca)ca.value='';
+  const qa=document.getElementById('qrAmt');
+  if(qa)qa.textContent=fmt(PACKAGES[i].amount)+' ฿';
+}
+function renderTopupForm(){
+  const m=METHODS.find(x=>x.id===selMethod);
+  if(!m){document.getElementById('topupFormArea').innerHTML='';return;}
+  const pkgHtml=PACKAGES.map((p,i)=>`
+    <div class="pkg${selPkg===i?' sel':''}" onclick="selectPkg(${i})">
+      <div class="pamount">${p.label}</div>
+      <div class="plabel">เติมเงิน</div>
+      ${p.bonus?`<div class="pbonus">${p.bonus}</div>`:''}
+    </div>`).join('');
+  if(m.id==='true'){
+    document.getElementById('topupFormArea').innerHTML=`
+      <div class="topup-form">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:18px">
+          <div style="width:38px;height:38px;background:#14532d;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:20px">💚</div>
+          <div><div style="font-size:14px;font-weight:600;color:var(--white)">TrueMoney Wallet</div>
+          <div style="font-size:11px;color:var(--white3)">โอนผ่าน TrueMoney หรือส่งอังเปา</div></div>
+        </div>
+        <div class="form-label">เบอร์ TrueMoney ปลายทาง</div>
+        <div style="background:var(--r3);border:1px solid var(--red3);border-radius:8px;padding:11px 16px;font-size:16px;font-weight:600;color:var(--white);margin-bottom:14px;letter-spacing:2px">081-234-5678</div>
+        <div class="form-label">เลือกจำนวนเงิน</div>
+        <div class="pkg-grid">${pkgHtml}</div>
+        <div class="form-label">หรือกรอกจำนวนเอง (฿)</div>
+        <input type="number" id="customAmt" class="form-input" placeholder="ขั้นต่ำ 20 ฿" min="20"
+          oninput="selPkg=null;document.querySelectorAll('.pkg').forEach(e=>e.classList.remove('sel'))">
+        <div class="form-label">โค้ดอังเปา TrueMoney (ถ้ามี)</div>
+        <input type="text" id="couponCode" class="form-input" placeholder="เช่น TRUEMC2026">
+        <button class="submit-btn" onclick="openTopupConfirm()">✔ ยืนยันเติมเงิน</button>
+        <div class="slip-note">หลังโอนแนบสลิปให้ Admin ใน Discord หรือ LINE<br>เงินจะเข้าภายใน 5–15 นาที</div>
+      </div>`;
+  } else {
+    const bi=BANK_INFO[selMethod];
+    const qrSvg=makeQR();
+    document.getElementById('topupFormArea').innerHTML=`
+      <div style="display:flex;gap:20px;flex-wrap:wrap;align-items:flex-start">
+        <div class="topup-form" style="flex:1;min-width:220px">
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:18px">
+            <div style="width:38px;height:38px;background:${bi.col}22;border:1px solid ${bi.col}50;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:18px">${m.logo}</div>
+            <div><div style="font-size:14px;font-weight:600;color:var(--white)">QR พร้อมเพย์ — ธนาคาร${bi.name}</div>
+            <div style="font-size:11px;color:var(--white3)">สแกนโอนผ่าน Mobile Banking</div></div>
+          </div>
+          <div class="form-label">เลือกจำนวนเงิน</div>
+          <div class="pkg-grid">${pkgHtml}</div>
+          <div class="form-label">หรือกรอกเอง (฿)</div>
+          <input type="number" id="customAmt" class="form-input" placeholder="ขั้นต่ำ 20 ฿" min="20"
+            oninput="selPkg=null;document.querySelectorAll('.pkg').forEach(e=>e.classList.remove('sel'));
+            const v=parseInt(this.value||500);const qa=document.getElementById('qrAmt');if(qa)qa.textContent=v.toLocaleString('th-TH')+' ฿'">
+          <button class="submit-btn" onclick="openTopupConfirm()">✔ ยืนยันและดู QR Code</button>
+        </div>
+        <div class="qr-box">
+          <div style="font-size:12px;color:var(--white3);margin-bottom:12px">สแกนเพื่อชำระเงิน</div>
+          <div class="qr-img">${qrSvg}</div>
+          <div class="bank-badge" style="border-color:${bi.col}60;color:${bi.col}">ธนาคาร${bi.name}</div>
+          <div class="qr-amt" id="qrAmt">${fmt(selPkg!==null?PACKAGES[selPkg].amount:500)} ฿</div>
+          <div class="qr-sub">พร้อมเพย์ ${bi.num}</div>
+          <button class="copy-btn" onclick="showToast('✔ คัดลอกเบอร์แล้ว!')">
+            <span style="font-size:14px">📋</span> คัดลอกเบอร์
+          </button>
+          <div class="slip-note">สแกน QR แล้วส่งสลิปให้ Admin ใน Discord<br>เงินเข้าภายใน 5–15 นาที</div>
+        </div>
+      </div>`;
+  }
+}
+
+function makeQR(){
+  const pat=[[1,1,1,1,1,1,1],[1,0,0,0,0,0,1],[1,0,1,1,1,0,1],[1,0,1,1,1,0,1],[1,0,1,1,1,0,1],[1,0,0,0,0,0,1],[1,1,1,1,1,1,1]];
+  const corner=(ox,oy)=>pat.map((row,r)=>row.map((v,c)=>v?`<rect x="${c*8+ox}" y="${r*8+oy}" width="8" height="8" fill="#111"/>`:'')).join('');
+  const dots=Array.from({length:40},(_,i)=>{
+    const x=Math.floor(i/5)*10+20,y=(i%5)*10+20;
+    return Math.random()>.4?`<rect x="${x+1}" y="${y+1}" width="7" height="7" rx="1" fill="#111"/>`:''
+  }).join('');
+  return `<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+    <rect width="120" height="120" fill="white"/>
+    ${corner(6,6)}${corner(70,6)}${corner(6,70)}${dots}
+    <rect x="50" y="50" width="20" height="20" rx="3" fill="#d42b2b"/>
+  </svg>`;
+}
+
+function openTopupConfirm(){
+  const ca=document.getElementById('customAmt');
+  let amt=selPkg!==null?PACKAGES[selPkg].amount:(ca&&ca.value?parseInt(ca.value):0);
+  if(!amt||amt<20){showToast('❌ กรุณาเลือกหรือกรอกจำนวนเงิน');return;}
+  const bonus=selPkg!==null?(PACKAGES[selPkg].bonus?parseInt(PACKAGES[selPkg].bonus.replace(/[^0-9]/g,'')):0):0;
+  const total=amt+bonus;
+  const mn=METHODS.find(x=>x.id===selMethod);
+  const txId='TX'+String(Date.now()).slice(-4);
+  pendingTx.unshift({id:txId,user:'ผู้เล่น_คุณ',method:mn.name,amount:total,date:new Date().toLocaleString('th-TH'),status:'wait'});
+  balance+=total;
+  history.unshift({type:'topup',label:'เติมเงิน '+mn.name,amount:total,date:new Date().toLocaleDateString('th-TH')});
+  updBal();renderShop();
+  showToast('💰 เติมเงิน '+fmt(total)+' ฿ สำเร็จ! (รอ Admin ยืนยัน)');
+}
+
+/* MY RANK */
+function renderMyRank(){
+  const last=[...owned].reverse().map(id=>RANKS.find(r=>r.id===id)).filter(Boolean)[0];
+  const box=document.getElementById('myRankBox');
+  if(last)box.innerHTML=`<div class="my-box">
+    <div class="my-icon" style="background:${last.bg};color:${last.color}">${last.badge.split(' ')[0]}</div>
+    <div class="my-info">
+      <div class="label12">ยศปัจจุบันของคุณ</div>
+      <div class="rdname" style="color:${last.color}">${last.badge} ${last.name}</div>
+      <div class="sub12">รวม ${owned.length} ยศ</div>
+    </div></div>`;
+  document.getElementById('historyList').innerHTML=history.map(h=>{
+    const plus=h.amount>0;
+    const icon=h.type==='topup'?'💳':'🛒';
+    return `<div class="hist-item">
+      <div class="hist-icon" style="background:${plus?'#0a1a0a':'#1a0e0e'}">${icon}</div>
+      <div class="hist-info"><div class="hist-name">${h.label}</div><div class="hist-date">${h.date}</div></div>
+      <div class="hist-amt" style="color:${plus?'#4ade80':'var(--redlit)'}">${plus?'+':''}${fmt(h.amount)} ฿</div>
+    </div>`;
+  }).join('')||'<div style="color:var(--white3);text-align:center;padding:20px;font-size:13px">ยังไม่มีประวัติ</div>';
+}
+
+/* ADMIN */
+function renderAdmin(){
+  const totalRev=pendingTx.filter(t=>t.status==='ok').reduce((s,t)=>s+t.amount,0);
+  const waiting=pendingTx.filter(t=>t.status==='wait').length;
+  document.getElementById('adminStats').innerHTML=`
+    <div class="stat-card"><div class="slabel">รายได้ทั้งหมด</div><div class="sval">${fmt(totalRev)} ฿</div><div class="ssub">ยอดที่อนุมัติแล้ว</div></div>
+    <div class="stat-card"><div class="slabel">รอตรวจสลิป</div><div class="sval" style="color:#f0c040">${waiting}</div><div class="ssub">รายการ</div></div>
+    <div class="stat-card"><div class="slabel">ยอดขายวันนี้</div><div class="sval">${fmt(pendingTx.filter(t=>t.status==='ok').length*400)} ฿</div><div class="ssub">ประมาณการ</div></div>
+    <div class="stat-card"><div class="slabel">ผู้เล่นทั้งหมด</div><div class="sval">128</div><div class="ssub">คน</div></div>`;
+  document.getElementById('pendingList').innerHTML=pendingTx.map((tx,i)=>{
+    const badgeCls=tx.status==='wait'?'badge-wait':tx.status==='ok'?'badge-ok':'badge-fail';
+    const badgeTxt=tx.status==='wait'?'รอตรวจ':tx.status==='ok'?'อนุมัติแล้ว':'ปฏิเสธ';
+    const actions=tx.status==='wait'?`
+      <div class="action-row">
+        <button class="a-btn approve" onclick="approveTx(${i})">✔ อนุมัติ</button>
+        <button class="a-btn reject" onclick="rejectTx(${i})">✕ ปฏิเสธ</button>
+        <button class="a-btn" style="background:var(--r3);color:var(--white2);border:1px solid var(--border)" onclick="viewSlip(${i})">👁 ดูสลิป</button>
+      </div>`:'';
+    return `<div class="pending-item">
+      <div class="slip-thumb" onclick="viewSlip(${i})">🧾</div>
+      <div class="pending-info">
+        <div class="pending-name">${tx.user}</div>
+        <div class="pending-detail">${tx.id} · ${tx.method} · ${tx.date}</div>
+      </div>
+      <div class="pending-amt">${fmt(tx.amount)} ฿</div>
+      <span class="pending-badge ${badgeCls}">${badgeTxt}</span>
+      ${actions}
+    </div>`;
+  }).join('')||'<div style="color:var(--white3);text-align:center;padding:20px;font-size:13px">ไม่มีรายการรอ</div>';
+}
+
+function approveTx(i){
+  pendingTx[i].status='ok';
+  renderAdmin();showToast('✔ อนุมัติรายการ '+pendingTx[i].id+' แล้ว');
+}
+function rejectTx(i){
+  pendingTx[i].status='fail';
+  renderAdmin();showToast('✕ ปฏิเสธรายการ '+pendingTx[i].id);
+}
+function viewSlip(i){
+  const tx=pendingTx[i];
+  viewTxId=i;
+  document.getElementById('slipFrom').textContent=tx.user+' · '+tx.method;
+  document.getElementById('slipAmt').textContent=fmt(tx.amount)+' ฿';
+  document.getElementById('slipTime').textContent=tx.date;
+  document.getElementById('slipApproveBtn').onclick=()=>{approveTx(i);closeModal('slipModal');};
+  document.getElementById('slipRejectBtn').onclick=()=>{rejectTx(i);closeModal('slipModal');};
+  document.getElementById('slipModal').classList.add('open');
+}
+
+/* UTILS */
+function sw(tab){
+  ['shop','topup','myrank','admin'].forEach((t,i)=>{
+    document.querySelectorAll('.tab')[i].classList.toggle('active',t===tab);
+    document.getElementById(t+'Page').classList.toggle('active',t===tab);
+  });
+  if(tab==='topup'){selMethod=null;selPkg=null;renderMethods();document.getElementById('topupFormArea').innerHTML='';}
+  if(tab==='myrank')renderMyRank();
+  if(tab==='admin')renderAdmin();
+}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+document.querySelectorAll('.modal-bg').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('open');}));
+let toastT;
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),2800);
+}
+renderShop();renderMethods();
+</script>
+
+<footer class="footer">
+TheZero Network © 2026
+</footer>
+
+</body>
+</html>
